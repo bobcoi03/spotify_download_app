@@ -20,7 +20,8 @@ body{
     .stepContainer{
         text-align: center;
         font-size: 50px;
-        display: grid;
+        display: flex;
+        flex-wrap: wrap;
         grid-template-columns: auto auto auto auto;
         grid-gap: 100px;
         justify-content: center;

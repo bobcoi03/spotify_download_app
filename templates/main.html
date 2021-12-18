@@ -1,12 +1,18 @@
 <!DOCTYPE html>
-<html>
+<html> 
     <head>
-
+        <title>This is a testing website</title>
+        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     </head>
     <body>
-        <form method="POST">
-            <input type="text" name="spotify_link" value="true" required>
-            <button type="submit" name="download_button">Download</button>
-        </form>
-    </body>
+        <h1 onclick="window.location.reload();">Spotify Downloader</h1>
+        <div class="searchBarContainer">
+            <form class="searchBar" action="/action_page.php">
+                <input type="text" placeholder="Search.." name="search">
+                <button type="submit"><i class="fa fa-search"></i></button>
+            </form>
+        </div>
+        <p>This is a testing paragraph</p>
+    </body> 
 </html>

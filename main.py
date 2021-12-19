@@ -4,7 +4,8 @@
     THEN SENDS THAT FILE TO USER AND THEN
     DELETES FILES ON THE SERVER, NO STORAGE REQUIRED.
 '''
-from flask import Flask, render_template, request, send_from_directory
+from flask import Flask, render_template, request, send_from_directory, session
+from flask_session import Session
 from flask.helpers import url_for
 import socketio
 from spotdl.download import DownloadManager
@@ -25,13 +26,23 @@ SpotifyClient.init(
 DIRNAME = os.path.dirname(__file__)
 
 app = Flask(__name__)
+app.secret_key = 'super secret key lmao'
+app.config['SESSION_TYPE'] = 'redis'
+Session(app)
 
 @app.route("/download", methods = ['GET','POST'])
 def download_page(): # str: download_link = spotify link to track
-    download_link = request.args.get('download_link', None)
+
+    if request.args.get('download_link', None) != None:
+        session['download_link'] = request.args.get('download_link', None)
+
+    # When user submits search form redirect to /download
+    if request.form.get('search'):
+        if request.method == 'POST':
+            session['download_link'] = request.form.get('search')
 
     spotdl_opts = {
-            "query": [str(download_link)],      # str: spotify url of track
+            "query": [session['download_link']],      # str: spotify url of track
             "output_format": "mp3",             # str: audio format
             "download_threads": 1,              
             "use_youtube": False,
@@ -59,8 +70,26 @@ def download_page(): # str: download_link = spotify link to track
             'duration': song_list[0].duration,                          # float: in seconds duraion of song
             'youtube_link': song_list[0].youtube_link                   # str:
         }
-    
-    return render_template('download.html', download_link=download_link, songObj = songObj)
+
+    # Handle Download
+    if request.form.get('download_button') == 'Download':
+        # Have to get download link again using AJAX for some reason
+            # This downloads the song to current directory
+        print("HELLLOOOOOOOO")
+        print(f'{session["download_link"]}, {song_list}')
+
+        #   If file already in uploads folder 
+            #   --> Deletes file from current dir
+            #   --> send user file in uploads folder
+        if os.path.isfile(f'./uploads/{songObj["file_name"]}'):
+            os.remove(songObj["file_name"])
+        else:
+            DownloadManager(spotdl_opts).download_multiple_songs(song_list)
+            shutil.move(songObj["file_name"], './uploads/')
+
+        return send_from_directory('./uploads/', songObj["file_name"], as_attachment=True)
+
+    return render_template('download.html', download_link=session['download_link'], songObj = songObj)
 
 @app.route("/", methods = ['GET','POST'])
 def main():
@@ -70,25 +99,8 @@ def main():
         if request.method == 'POST':
             search_input = request.form.get('search')
             return redirect(url_for('download_page', download_link = search_input))
-        '''
-        # Downloads song        
-        DownloadManager(spotdl_opts).download_multiple_songs(song_list)
-        # Move file from current folder into /uploads/ Because I don't know how to do it in spotDL
-    
-        # Check if file_name already exists in /uploads folder
-        if os.path.isfile(f'./uploads/{songObj["file_name"]}'):
-            os.remove(songObj["file_name"])
-            return send_from_directory('./uploads/', songObj["file_name"], as_attachment=True)
-        else:
-            shutil.move(songObj["file_name"], './uploads/')
-
-            return send_from_directory('./uploads/', songObj["file_name"], as_attachment=True)
-        '''
 
     return render_template('main.html')
 
 if __name__ == '__main__':
     app.run(debug=True,host='0.0.0.0', port=5000)
-
-
-

@@ -8,10 +8,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
+        {{ download_link }}
         {{ songObj }}
         <h1 onclick="window.location.reload();">Spotify Downloader</h1>
         <div class="searchBarContainer">
-            <form class="searchBar" id="search_form">
+            <form class="searchBar" id="search_form" method="post">
                 <input id="search_input" type="text" placeholder="Search.." name="search" required>
                 <button id="search_button"type="submit"><i class="fa fa-search"></i></button>
             </form>
@@ -19,20 +20,35 @@
         <img src="{{ songObj.album_cover_url }}" width="320" height="320">
         <p>{{ songObj.file_name }}</p>
         <p id="duration_display"></p>
-        <button name="download_button" type="button">Download</button>
+        <form id="download_song_form" method="post">
+            <input name="download_button" type="submit" value="Download">
+        </form>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script type="text/javascript" charset="utf-8">
         var duration = "{{ songObj.duration }}"; // in seconds
         var minutes = Math.floor(duration / 60);
         var seconds = Math.round(duration - minutes * 60);
-        
-        // add a 0 before digit for nicer display
+        // add a 0 before digit if seconds < 10 for nicer display
         if (seconds < 10) {
             seconds.toString();
             seconds = `0${seconds}`;
         }
         var duration_display = `${minutes}:${seconds}`;
         document.getElementById("duration_display").innerHTML = duration_display;
+
+        /*
+        $('#download_song_form').on("submit", (e) => {
+            $.ajax({
+                dataType: 'json',
+                type: 'post',
+                url:"{{ url_for('download_page')}}",
+                contentType: 'application/json;charset=UTF-8',
+                data: JSON.stringify({
+                    'download_link': "{{ download_link }}"
+                })
+            })
+        })
+        */
     </script>
     </body>
 </html>

@@ -5,13 +5,14 @@
     DELETES FILES ON THE SERVER, NO STORAGE REQUIRED.
 '''
 from flask import Flask, render_template, request, send_from_directory
+from flask.helpers import url_for
+import socketio
 from spotdl.download import DownloadManager
 from spotdl.parsers import parse_query
 from spotdl.search import SpotifyClient, SongObject
 import os
 import shutil
 import asyncio
-
 from werkzeug.utils import redirect
 
 # Initialize spotify client id & secret is provided by spotdl
@@ -25,28 +26,22 @@ DIRNAME = os.path.dirname(__file__)
 
 app = Flask(__name__)
 
-@app.route("/", methods = ['GET','POST'])
-def main():
+@app.route("/download", methods = ['GET','POST'])
+def download_page(): # str: download_link = spotify link to track
+    download_link = request.args.get('download_link', None)
 
-    # 
-    songObj = {}
-
-    # get spotify link and download it
-    if request.method == 'POST':
-
-        spotify_link = request.form.get('search')
-
-        spotdl_opts = {
-            "query": [str(spotify_link)],
-            "output_format": "mp3",
-            "download_threads": 1,
+    spotdl_opts = {
+            "query": [str(download_link)],      # str: spotify url of track
+            "output_format": "mp3",             # str: audio format
+            "download_threads": 1,              
             "use_youtube": False,
             "generate_m3u": False,
-            "search_threads": 2,
-            "path_template": None
+            "search_threads": 2,                
+            "path_template": None               # None don't know what this is
         }
 
-        song_list = parse_query(
+    # Query info using spotify api --> returns list of SongObjects or list[SongObject,...,SongObject]
+    song_list = parse_query(
             spotdl_opts["query"],
             spotdl_opts["output_format"],
             spotdl_opts["download_threads"],
@@ -55,32 +50,45 @@ def main():
             spotdl_opts["search_threads"],
             spotdl_opts["path_template"]
         )
-
-        songObj = {
-            'album_cover_url': song_list[0].album_cover_url,
-            'file_name': song_list[0].file_name + '.mp3',
-            'list_of_artist_names': song_list[0].contributing_artists,
-            'album': song_list[0].album_name,
-            'duration': song_list[0].duration
+    # song objects. check spotdl.search.SongObject to find methods and attributes.
+    songObj = {
+            'album_cover_url': song_list[0].album_cover_url,            # str: url of img to cover album
+            'file_name': song_list[0].file_name + '.mp3',               # str: file_name
+            'list_of_artist_names': song_list[0].contributing_artists,  # str array: of contributing artists to track
+            'album': song_list[0].album_name,                           # str: album name
+            'duration': song_list[0].duration,                          # float: in seconds duraion of song
+            'youtube_link': song_list[0].youtube_link                   # str:
         }
+    
+    return render_template('download.html', download_link=download_link, songObj = songObj)
 
+@app.route("/", methods = ['GET','POST'])
+def main():
+
+    # When user submits search form redirect to /download
+    if request.form.get('search'):
+        if request.method == 'POST':
+            search_input = request.form.get('search')
+            return redirect(url_for('download_page', download_link = search_input))
+        '''
         # Downloads song        
         DownloadManager(spotdl_opts).download_multiple_songs(song_list)
         # Move file from current folder into /uploads/ Because I don't know how to do it in spotDL
     
         # Check if file_name already exists in /uploads folder
         if os.path.isfile(f'./uploads/{songObj["file_name"]}'):
-            os.remove(songObj["filename"])
-            return send_from_directory('./uploads/', songObj["filename"], as_attachment=True)
+            os.remove(songObj["file_name"])
+            return send_from_directory('./uploads/', songObj["file_name"], as_attachment=True)
         else:
-            shutil.move(songObj["filename"], './uploads/')
+            shutil.move(songObj["file_name"], './uploads/')
 
-            return send_from_directory('./uploads/', songObj["filename"], as_attachment=True)
+            return send_from_directory('./uploads/', songObj["file_name"], as_attachment=True)
+        '''
 
-    return render_template('main.html', songObj = songObj)
+    return render_template('main.html')
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True,host='0.0.0.0', port=5000)
 
 
 

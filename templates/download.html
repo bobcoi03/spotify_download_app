@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Spotify Download</title>
+        <link rel="stylesheet" href="../static/style.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        {{ songObj }}
+        <h1 onclick="window.location.reload();">Spotify Downloader</h1>
+        <div class="searchBarContainer">
+            <form class="searchBar" id="search_form">
+                <input id="search_input" type="text" placeholder="Search.." name="search" required>
+                <button id="search_button"type="submit"><i class="fa fa-search"></i></button>
+            </form>
+        </div>
+        <img src="{{ songObj.album_cover_url }}" width="320" height="320">
+        <p>{{ songObj.file_name }}</p>
+        <p id="duration_display"></p>
+        <button name="download_button" type="button">Download</button>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript" charset="utf-8">
+        var duration = "{{ songObj.duration }}"; // in seconds
+        var minutes = Math.floor(duration / 60);
+        var seconds = Math.round(duration - minutes * 60);
+        
+        // add a 0 before digit for nicer display
+        if (seconds < 10) {
+            seconds.toString();
+            seconds = `0${seconds}`;
+        }
+        var duration_display = `${minutes}:${seconds}`;
+        document.getElementById("duration_display").innerHTML = duration_display;
+    </script>
+    </body>
+</html>

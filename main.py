@@ -28,6 +28,9 @@ app = Flask(__name__)
 @app.route("/", methods = ['GET','POST'])
 def main():
 
+    # 
+    songObj = {}
+
     # get spotify link and download it
     if request.method == 'POST':
 
@@ -53,28 +56,28 @@ def main():
             spotdl_opts["path_template"]
         )
 
-        album_cover_url = song_list[0].album_cover_url
-        file_name = song_list[0].file_name + '.mp3'
-        list_of_artist_names = song_list[0].contributing_artists
-        album = song_list[0].album_name
-        duration = song_list[0].duration
+        songObj = {
+            'album_cover_url': song_list[0].album_cover_url,
+            'file_name': song_list[0].file_name + '.mp3',
+            'list_of_artist_names': song_list[0].contributing_artists,
+            'album': song_list[0].album_name,
+            'duration': song_list[0].duration
+        }
 
         # Downloads song        
         DownloadManager(spotdl_opts).download_multiple_songs(song_list)
         # Move file from current folder into /uploads/ Because I don't know how to do it in spotDL
     
         # Check if file_name already exists in /uploads folder
-        if os.path.isfile(f'./uploads/{file_name}'):
-            os.remove(file_name)
-
-            return send_from_directory('./uploads/', file_name, as_attachment=True)
+        if os.path.isfile(f'./uploads/{songObj["file_name"]}'):
+            os.remove(songObj["filename"])
+            return send_from_directory('./uploads/', songObj["filename"], as_attachment=True)
         else:
-            shutil.move(file_name, './uploads/')
+            shutil.move(songObj["filename"], './uploads/')
 
-            return send_from_directory('./uploads/', file_name, as_attachment=True)
+            return send_from_directory('./uploads/', songObj["filename"], as_attachment=True)
 
-
-    return render_template('main.html')
+    return render_template('main.html', songObj = songObj)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

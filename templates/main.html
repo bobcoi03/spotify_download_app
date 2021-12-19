@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html> 
     <head>
-        <title>This is a testing website</title>
+        <title>Spotify Download</title>
         <link rel="stylesheet" href="../static/style.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
@@ -10,9 +10,9 @@
     <body>
         <h1 onclick="window.location.reload();">Spotify Downloader</h1>
         <div class="searchBarContainer">
-            <form class="searchBar" method="POST">
-                <input type="text" placeholder="Search.." name="search" required>
-                <button type="submit"><i class="fa fa-search"></i></button>
+            <form class="searchBar" id="search_form">
+                <input id="search_input" type="text" placeholder="Search.." name="search" required>
+                <button id="search_button"type="submit"><i class="fa fa-search"></i></button>
             </form>
         </div>
         <h2>How To Download Your Spotify Playlist</h2>
@@ -32,5 +32,26 @@
                 <p>Click "Download" to begin downloading</p>
             </div>
         </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script type="text/javascript" charset="utf-8">
+            var search_input = document.getElementById('search_input')
+            var search_button = document.getElementById('search_button')
+
+            $("#search_form").on("submit", (e) => {
+                if (search_input) {
+                    alert("Before Ajax called")
+                    $.ajax({
+                        dataType: 'json',
+                        type: 'POST',
+                        url:"{{url_for('main')}}",
+                        contentType: 'application/json;charset=UTF-8',
+                        data: JSON.stringify({
+                        'spotify_link': search_input.value
+                        }),
+                    })
+                }
+                e.preventDefault();
+            })
+        </script>
     </body> 
 </html>

@@ -10,7 +10,7 @@ from flask.helpers import url_for
 import socketio
 from spotdl.download import DownloadManager
 from spotdl.parsers import parse_query
-from spotdl.search import SpotifyClient, SongObject
+from spotdl.search import SpotifyClient, SongObject, from_spotify_url
 import os
 import shutil
 import asyncio
@@ -32,6 +32,10 @@ Session(app)
 
 @app.route("/download", methods = ['GET','POST'])
 def download_page(): # str: download_link = spotify link to track
+    """
+    This route displays a information about a single track 
+    with a download button for user to download song
+    """
 
     if request.args.get('download_link', None) != None:
         session['download_link'] = request.args.get('download_link', None)
@@ -61,7 +65,7 @@ def download_page(): # str: download_link = spotify link to track
             spotdl_opts["search_threads"],
             spotdl_opts["path_template"]
         )
-    # song objects. check spotdl.search.SongObject to find methods and attributes.
+    # song object for easier use in Javascript. check spotdl.search.SongObject to find methods and attributes.
     songObj = {
             'album_cover_url': song_list[0].album_cover_url,            # str: url of img to cover album
             'file_name': song_list[0].file_name + '.mp3',               # str: file_name
@@ -93,14 +97,74 @@ def download_page(): # str: download_link = spotify link to track
 
 @app.route("/", methods = ['GET','POST'])
 def main():
-
     # When user submits search form redirect to /download
     if request.form.get('search'):
         if request.method == 'POST':
             search_input = request.form.get('search')
-            return redirect(url_for('download_page', download_link = search_input))
+            # if user input is a spotify url
+            if "//open.spotify.com/track/" in search_input:
+                return redirect(url_for('download_page', download_link = search_input))
+            # If user input is a search query
+            else:
+                return redirect(url_for('search_page', search_query = search_input))
 
     return render_template('main.html')
+
+@app.route('/search', methods = ['GET', 'POST'])
+def search_page():
+    if request.args.get('search_query', None) != None:
+        session['search_query'] = request.args.get('search_query')
+
+    # list[SongObject,...,SongObject]
+    results_of_search_query = search_query(session['search_query'])
+
+    # turn results_of_search_query into JSON
+    results_of_search_query_json = {}
+    for i in range(len(results_of_search_query)):
+        # Filename doesn't include .mp3
+        results_of_search_query_json[results_of_search_query[i].file_name] = {
+            'album_cover_url': results_of_search_query[i].album_cover_url,
+            'list_of_artists_names': results_of_search_query[i].contributing_artists,
+            'duration':results_of_search_query[i].duration,
+            'youtube_link':results_of_search_query[i].youtube_link}
+
+    print(results_of_search_query_json)
+
+    return render_template('search_page.html', results_of_search_query=results_of_search_query_json)
+    
+
+def search_query(query: str):
+    """
+    THIS FUNCTION TAKES search query AS INPUT AND RETURN
+    a `list<SongObject>`.
+    """
+    songs = []  # list<SongObjects>
+    list_song_urls = []
+    # get a spotify client
+    spotify_client = SpotifyClient()
+
+    search_results = spotify_client.search(query, type="track")
+
+    number_of_search_results = len(search_results.get("tracks", {}).get("items", []))
+
+    # return first result link or if no matches are found, raise Exception
+    if search_results is None or number_of_search_results == 0:
+        raise Exception("No song matches found on Spotify")
+
+    # Adds each song url to list_song_urls
+    for i in range(0, number_of_search_results):
+        if search_results["tracks"]["items"][i]["id"] == None:
+            break
+        else:
+            song_url = "http://open.spotify.com/track/" + search_results["tracks"]["items"][i]["id"]
+            list_song_urls.append(song_url)
+
+    # Create SongObject for each url in list_song_urls and add it to songs[]
+    for i in range(len(list_song_urls)):
+        song = from_spotify_url(list_song_urls[i], 'mp3', False, None, None)
+        songs.append(song)
+
+    return songs     
 
 if __name__ == '__main__':
     app.run(debug=True,host='0.0.0.0', port=5000)

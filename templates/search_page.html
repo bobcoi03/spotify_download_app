@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Spotify Download</title>
+        <link rel="stylesheet" href="../static/style.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <h1 onclick="window.location.reload();">Spotify Downloader</h1>
+        <div class="searchBarContainer">
+            <form class="searchBar" id="search_form" method="post">
+                <input id="search_input" type="text" placeholder="Search.." name="search" required>
+                <button id="search_button"type="submit"><i class="fa fa-search"></i></button>
+            </form>
+        </div>
+        <img id="img"src="" width="320" height="320">
+    </body>
+    <script>
+        var list_of_songObjects = {{ results_of_search_query|tojson }};
+        var inner_songObjects = list_of_songObjects[Object.keys(list_of_songObjects)[0]];
+        document.getElementById('img').src = inner_songObjects.album_cover_url;
+    </script>
+</html>

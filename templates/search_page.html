@@ -22,20 +22,43 @@
     <script>
         let display_column = document.getElementById('display_column')
 
-                // 
-        function create_song_display(songObject, songName) {
-            console.log("create_song_display is called")
+        function convert_duration(duration) {
+            /*
+            Duration is in seconds: float
+            Takes float: duration and returns duration  of type string: ie. (200.0)=>{}=>3:20
+            */
+            var minutes = Math.floor(duration / 60)
+            var seconds = Math.round(duration - minutes * 60)
+            
+            // for nicer display
+            if (seconds < 10) {
+                seconds.toString();
+                seconds = `0${seconds}`
+            }
+            return `${minutes}:${seconds}`
+        }
+        // 
+        function create_song_display(song_object, song_name) {
+            let p = document.createElement('p')
+            let duration_display = document.createElement('p')
+            let image_obj = document.createElement('img')
             let display_elem = document.createElement('div')
+
+            p.innerHTML = song_name
+            duration_display.innerHTML = convert_duration(song_object.duration)
+
             display_elem.className = 'song_display'
 
-            var image_obj = document.createElement('img')
-            image_obj.src = songObject.album_cover_url
+            image_obj.src = song_object.album_cover_url
             image_obj.style.height = '300px'
             image_obj.style.width = '300px'
 
-            display_column.appendChild(image_obj)
-        }
+            display_elem.append(image_obj)
+            display_elem.append(p)
+            display_elem.append(duration_display)
 
+            display_column.append(display_elem)
+        }
         var list_of_songObjects = {{ results_of_search_query|tojson }}
         var inner_songObjects = list_of_songObjects[Object.keys(list_of_songObjects)[0]]
         let array_of_song_names = Object.keys(list_of_songObjects)

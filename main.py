@@ -97,7 +97,7 @@ def download_page(): # str: download_link = spotify link to track
 
 @app.route("/", methods = ['GET','POST'])
 def main():
-    # When user submits search form redirect to /download
+    # When user submits search form redirect to /download or /search
     if request.form.get('search'):
         if request.method == 'POST':
             search_input = request.form.get('search')
@@ -112,6 +112,17 @@ def main():
 
 @app.route('/search', methods = ['GET', 'POST'])
 def search_page():
+    # When user submits search form redirect to /download or /search
+    if request.form.get('search'):
+        if request.method == 'POST':
+            search_input = request.form.get('search')
+            # if user input is a spotify url
+            if "//open.spotify.com/track/" in search_input:
+                return redirect(url_for('download_page', download_link = search_input))
+            # If user input is a search query
+            else:
+                return redirect(url_for('search_page', search_query = search_input))
+
     if request.args.get('search_query', None) != None:
         session['search_query'] = request.args.get('search_query')
 
@@ -126,13 +137,11 @@ def search_page():
             'album_cover_url': results_of_search_query[i].album_cover_url,
             'list_of_artists_names': results_of_search_query[i].contributing_artists,
             'duration':results_of_search_query[i].duration,
-            'youtube_link':results_of_search_query[i].youtube_link}
-
-    print(results_of_search_query_json)
+            'youtube_link':results_of_search_query[i].youtube_link,
+            'spotify_link':results_of_search_query[i].spotify_url}
 
     return render_template('search_page.html', results_of_search_query=results_of_search_query_json)
     
-
 def search_query(query: str):
     """
     THIS FUNCTION TAKES search query AS INPUT AND RETURN

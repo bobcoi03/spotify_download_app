@@ -15,11 +15,35 @@
                 <button id="search_button"type="submit"><i class="fa fa-search"></i></button>
             </form>
         </div>
-        <img id="img"src="" width="320" height="320">
+        <div id="display_column">
+
+        </div>
     </body>
     <script>
-        var list_of_songObjects = {{ results_of_search_query|tojson }};
-        var inner_songObjects = list_of_songObjects[Object.keys(list_of_songObjects)[0]];
-        document.getElementById('img').src = inner_songObjects.album_cover_url;
+        let display_column = document.getElementById('display_column')
+
+                // 
+        function create_song_display(songObject, songName) {
+            console.log("create_song_display is called")
+            let display_elem = document.createElement('div')
+            display_elem.className = 'song_display'
+
+            var image_obj = document.createElement('img')
+            image_obj.src = songObject.album_cover_url
+            image_obj.style.height = '300px'
+            image_obj.style.width = '300px'
+
+            display_column.appendChild(image_obj)
+        }
+
+        var list_of_songObjects = {{ results_of_search_query|tojson }}
+        var inner_songObjects = list_of_songObjects[Object.keys(list_of_songObjects)[0]]
+        let array_of_song_names = Object.keys(list_of_songObjects)
+
+        console.log(array_of_song_names.length)
+    
+        for (i=0; i < array_of_song_names.length; i++) {
+            create_song_display(list_of_songObjects[Object.keys(list_of_songObjects)[i]], array_of_song_names[i])
+        }
     </script>
 </html>

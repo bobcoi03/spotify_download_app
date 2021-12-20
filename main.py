@@ -36,7 +36,6 @@ def download_page(): # str: download_link = spotify link to track
     This route displays a information about a single track 
     with a download button for user to download song
     """
-
     if request.args.get('download_link', None) != None:
         session['download_link'] = request.args.get('download_link', None)
 

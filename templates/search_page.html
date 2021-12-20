@@ -1,3 +1,7 @@
+<!--
+    THIS PAGE SHOULD DISPLAY IF USER INPUT TO SEARCHBOX does not include 'open.spotify.com/playlist/' or 'open.spotify.com/track/'
+    THIS PAGE SHOWS A LIST OF SONGS AND INFORMATION ABOUT EACH
+-->
 <!DOCTYPE html>
 <html>
     <head>
@@ -16,7 +20,9 @@
             </form>
         </div>
         <div id="display_column">
-
+            <!--
+                convert_duration() will add divs here containing information about each individual song
+            -->
         </div>
     </body>
     <script>
@@ -39,12 +45,23 @@
         }
         // 
         function create_song_display(song_object, song_name) {
+            /*
+            song_object has the following attributes/properties:
+            
+            .album_cover_url: str -> url to album cover image
+            .list_of_artists_names: array -> includes contributing artists to the song
+            .duration: float -> duration of song in seconds
+            .youtube_link: str -> youtube link to song
+            .spotify_link: str -> spotify link to song
+            */
             let p = document.createElement('p')
             let duration_display = document.createElement('p')
             let image_obj = document.createElement('img')
             let display_elem = document.createElement('div')
+            let download_button = document.createElement('button')
 
             p.innerHTML = song_name
+
             duration_display.innerHTML = convert_duration(song_object.duration)
 
             display_elem.className = 'song_display'
@@ -53,18 +70,26 @@
             image_obj.style.height = '300px'
             image_obj.style.width = '300px'
 
+            download_button.id = song_object.spotify_link
+            download_button.innerHTML = 'Download'
+
             display_elem.append(image_obj)
             display_elem.append(p)
             display_elem.append(duration_display)
+            display_elem.append(download_button)
 
             display_column.append(display_elem)
         }
+        /*
+        JSON in the form. tojson is used because {{ results_of_search_query }} is a python dict
+        { 'file_name': {'album_cover_url':'url','duration': float},...,'file_name': {'album_cover_url':'url','duration': float}}
+        */
         var list_of_songObjects = {{ results_of_search_query|tojson }}
         var inner_songObjects = list_of_songObjects[Object.keys(list_of_songObjects)[0]]
         let array_of_song_names = Object.keys(list_of_songObjects)
 
         console.log(array_of_song_names.length)
-    
+        
         for (i=0; i < array_of_song_names.length; i++) {
             create_song_display(list_of_songObjects[Object.keys(list_of_songObjects)[i]], array_of_song_names[i])
         }

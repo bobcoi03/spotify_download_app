@@ -15,6 +15,7 @@ import os
 import shutil
 import asyncio
 from werkzeug.utils import redirect
+import time
 
 # Initialize spotify client id & secret is provided by spotdl
 SpotifyClient.init(
@@ -137,6 +138,7 @@ def search_page():
         session['search_query'] = request.args.get('search_query')
 
     # list[SongObject,...,SongObject]
+    start_time = time.time()
     results_of_search_query = search_query(session['search_query'])
 
     # turn results_of_search_query into JSON
@@ -150,6 +152,11 @@ def search_page():
             'duration':results_of_search_query[i].duration,
             'youtube_link':results_of_search_query[i].youtube_link,
             'spotify_link':results_of_search_query[i].spotify_url}
+
+    end_time = time.time()
+    time_lapsed = end_time - start_time
+
+    time_convert(time_lapsed)
 
     return render_template('search_page.html', results_of_search_query=results_of_search_query_json)
     
@@ -177,6 +184,8 @@ def search_query(query: str):
             break
         else:
             song_url = "http://open.spotify.com/track/" + search_results["tracks"]["items"][i]["id"]
+        #    print(f'search_results: \n\n{search_results["tracks"]["items"][i]}')
+        #    print('\n\n\n')
             list_song_urls.append(song_url)
 
     # Create SongObject for each url in list_song_urls and add it to songs[]
@@ -184,7 +193,14 @@ def search_query(query: str):
         song = from_spotify_url(list_song_urls[i], 'mp3', False, None, None)
         songs.append(song)
 
-    return songs     
+    return songs
+
+def time_convert(sec):
+  mins = sec // 60
+  sec = sec % 60
+  hours = mins // 60
+  mins = mins % 60
+  print("Time Lapsed = {0}:{1}:{2}".format(int(hours),int(mins),sec))
 
 if __name__ == '__main__':
     app.run(debug=True,host='0.0.0.0', port=5000)

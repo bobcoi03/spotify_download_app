@@ -19,7 +19,7 @@
                 <button id="search_button"type="submit"><i class="fa fa-search"></i></button>
             </form>
         </div>
-        <div id="display_column">
+        <div id="display_column" style="display: flex;width: 100%;flex-wrap: wrap;justify-content: center;">
             <!--
                 convert_duration() will add divs here containing information about each individual song
             -->
@@ -75,8 +75,8 @@
             display_elem.className = 'song_display'
 
             image_obj.src = song_object.album_cover_url
-            image_obj.style.height = '300px'
-            image_obj.style.width = '300px'
+            image_obj.style.height = '320px'
+            image_obj.style.width = '320px'
 
             a.append(image_obj)
             display_elem.append(a)

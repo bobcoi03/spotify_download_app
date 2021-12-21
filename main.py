@@ -140,6 +140,9 @@ def search_page():
     # list[SongObject,...,SongObject]
     start_time = time.time()
     results_of_search_query = search_query(session['search_query'])
+    end_time = time.time()
+    time_lapsed = end_time - start_time
+    print(f'Total search time {time_convert(time_lapsed)}')
 
     # turn results_of_search_query into JSON
     results_of_search_query_json = {}
@@ -152,11 +155,6 @@ def search_page():
             'duration':results_of_search_query[i].duration,
             'youtube_link':results_of_search_query[i].youtube_link,
             'spotify_link':results_of_search_query[i].spotify_url}
-
-    end_time = time.time()
-    time_lapsed = end_time - start_time
-
-    time_convert(time_lapsed)
 
     return render_template('search_page.html', results_of_search_query=results_of_search_query_json)
     
@@ -190,8 +188,12 @@ def search_query(query: str):
 
     # Create SongObject for each url in list_song_urls and add it to songs[]
     for i in range(len(list_song_urls)):
+        start_time = time.time()
         song = from_spotify_url(list_song_urls[i], 'mp3', False, None, None)
         songs.append(song)
+        end_time = time.time()
+        time_lapsed = end_time - start_time
+        print(f'Per loop: {time_convert(time_lapsed)}')
 
     return songs
 
@@ -200,7 +202,7 @@ def time_convert(sec):
   sec = sec % 60
   hours = mins // 60
   mins = mins % 60
-  print("Time Lapsed = {0}:{1}:{2}".format(int(hours),int(mins),sec))
+  return "{0}:{1}:{2}".format(int(hours),int(mins),sec)
 
 if __name__ == '__main__':
     app.run(debug=True,host='0.0.0.0', port=5000)

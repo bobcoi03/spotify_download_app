@@ -67,12 +67,15 @@
             a.href = '/download?download_link=' + song_object.spotify_link
 
             p.innerHTML = song_name
+            p.style.wordWrap = 'break-word'
 
             p_artists.innerHTML = String(song_object.list_of_artists_names).replace(',',', ')
 
             duration_display.innerHTML = convert_duration(song_object.duration)
 
             display_elem.className = 'song_display'
+            display_elem.style.padding = '5px'
+            display_elem.style.maxWidth = '320px'
 
             image_obj.src = song_object.album_cover_url
             image_obj.style.height = '320px'

@@ -92,10 +92,11 @@ def download_page(): # str: download_link = spotify link to track
             # This downloads the song to current directory
 
         #   If file already in uploads folder 
-            #   --> Deletes file from current dir
-            #   --> send user file in uploads folder
+        #      --> send user files in uploads folder
+        #   Else
+        #      --> Download song and move it into uploads folder
         if os.path.isfile(f'./uploads/{songObj["file_name"]}'):
-            os.remove(songObj["file_name"])
+            pass
         else:
             DownloadManager(spotdl_opts).download_multiple_songs(song_list)
             shutil.move(songObj["file_name"], './uploads/')

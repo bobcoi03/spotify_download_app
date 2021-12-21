@@ -42,7 +42,17 @@ def download_page(): # str: download_link = spotify link to track
     # When user submits search form redirect to /download
     if request.form.get('search'):
         if request.method == 'POST':
-            session['download_link'] = request.form.get('search')
+            # if user input is a spotify url
+            if "//open.spotify.com/track/" in request.form.get('search'):
+                session['download_link'] = request.form.get('search')
+            elif "//open.spotify.com/track/" in request.form.get('search'):
+                """
+                This should return a download page for the playlist
+                """
+                return redirect('/playlist_download')
+            # If user input is a search query
+            else:
+                return redirect(url_for('search_page', search_query = request.form.get('search')))
 
     spotdl_opts = {
             "query": [session['download_link']],      # str: spotify url of track

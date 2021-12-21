@@ -77,19 +77,19 @@ def download_page(): # str: download_link = spotify link to track
     # song object for easier use in Javascript. check spotdl.search.SongObject to find methods and attributes.
     songObj = {
             'album_cover_url': song_list[0].album_cover_url,            # str: url of img to cover album
-            'file_name': song_list[0].file_name + '.mp3',               # str: file_name
+            'file_name': ", ".join(song_list[0].contributing_artists) + " - " + song_list[0].song_name + '.mp3',
             'list_of_artist_names': song_list[0].contributing_artists,  # str array: of contributing artists to track
             'album': song_list[0].album_name,                           # str: album name
             'duration': song_list[0].duration,                          # float: in seconds duraion of song
             'youtube_link': song_list[0].youtube_link                   # str:
         }
 
+    print(f'songObj["file_name"]: {songObj["file_name"]}')
+
     # Handle Download
     if request.form.get('download_button') == 'Download':
         # Have to get download link again using AJAX for some reason
             # This downloads the song to current directory
-        print("HELLLOOOOOOOO")
-        print(f'{session["download_link"]}, {song_list}')
 
         #   If file already in uploads folder 
             #   --> Deletes file from current dir

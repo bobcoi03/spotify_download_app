@@ -43,11 +43,13 @@
             }
             return `${minutes}:${seconds}`
         }
-        // 
         function create_song_display(song_object, song_name) {
             /*
+            This is supposed to append a div containing all information and styling about a song
+
             song_object has the following attributes/properties:
             
+            .song_name: str -> song name
             .album_cover_url: str -> url to album cover image
             .list_of_artists_names: array -> includes contributing artists to the song
             .duration: float -> duration of song in seconds
@@ -56,6 +58,7 @@
             */
             let a = document.createElement('a')
             let p = document.createElement('p')
+            let p_artists = document.createElement('p')
             let duration_display = document.createElement('p')
             let image_obj = document.createElement('img')
             let display_elem = document.createElement('div')
@@ -64,6 +67,8 @@
             a.href = '/download?download_link=' + song_object.spotify_link
 
             p.innerHTML = song_name
+
+            p_artists.innerHTML = String(song_object.list_of_artists_names).replace(',',', ')
 
             duration_display.innerHTML = convert_duration(song_object.duration)
 
@@ -76,6 +81,7 @@
             a.append(image_obj)
             display_elem.append(a)
             display_elem.append(p)
+            display_elem.append(p_artists)
             display_elem.append(duration_display)
 
             display_column.append(display_elem)
@@ -90,8 +96,9 @@
 
         console.log(array_of_song_names.length)
         
+        //
         for (i=0; i < array_of_song_names.length; i++) {
-            create_song_display(list_of_songObjects[Object.keys(list_of_songObjects)[i]], array_of_song_names[i])
+            create_song_display(list_of_songObjects[Object.keys(list_of_songObjects)[i]], list_of_songObjects[Object.keys(list_of_songObjects)[i]].song_name)
         }
     </script>
 </html>

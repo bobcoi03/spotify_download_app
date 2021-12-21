@@ -144,6 +144,7 @@ def search_page():
     for i in range(len(results_of_search_query)):
         # Filename doesn't include .mp3
         results_of_search_query_json[results_of_search_query[i].file_name] = {
+            'song_name': results_of_search_query[i].song_name,
             'album_cover_url': results_of_search_query[i].album_cover_url,
             'list_of_artists_names': results_of_search_query[i].contributing_artists,
             'duration':results_of_search_query[i].duration,

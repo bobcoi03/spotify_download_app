@@ -5,21 +5,21 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Spotify Download</title>
+        <title>Spotify Converter</title>
         <link rel="stylesheet" href="../static/style.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        <h1 onclick="window.location.reload();">Spotify Downloader</h1>
-        <div class="searchBarContainer">
+        <h1><a href="/" style="text-decoration: none;color: #0d6efd;">Spotify Converter</a></h1>
+        <div class="searchBarContainer" style="margin-bottom: 40px;">
             <form class="searchBar" id="search_form" method="post">
-                <input id="search_input" type="text" placeholder="Search.." name="search" required>
+                <input id="search_input" type="text" placeholder="Search term or Spotify url..." name="search" required>
                 <button id="search_button"type="submit"><i class="fa fa-search"></i></button>
             </form>
         </div>
-        <div id="display_column" style="display: flex;width: 100%;flex-wrap: wrap;justify-content: center;">
+        <div id="display_column" style="display: flex;width: 100%;flex-wrap: wrap;justify-content: center;max-width: 990px;margin: auto;">
             <!--
                 convert_duration() will add divs here containing information about each individual song
             -->

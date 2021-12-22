@@ -1,5 +1,7 @@
+condition = 5
 
-import os
-dirname = os.path.dirname(__file__)
-
-print(dirname)
+if 4 < condition:
+    print("Yeaa man")
+    pass
+else:
+    print("YOoo dude")

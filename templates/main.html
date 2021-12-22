@@ -1,41 +1,45 @@
 <!DOCTYPE html>
 <html> 
     <head>
-        <title>Spotify Download</title>
+        <title>Spotify Converter</title>
         <link rel="stylesheet" href="../static/style.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        <h1 onclick="window.location.reload();">Spotify Downloader</h1>
+        <div class="main">
+        <h1><a href="/" style="text-decoration: none;color: #0d6efd;">Spotify Converter</a></h1>
         <div class="searchBarContainer">
             <form class="searchBar" id="search_form" method="post">
-                <input id="search_input" type="text" placeholder="Search.." name="search" required>
+                <input id="search_input" type="text" placeholder="Search term or Spotify url..." name="search" required>
                 <button id="search_button"type="submit"><i class="fa fa-search"></i></button>
             </form>
         </div>
-        <h2>How To Download Your Spotify Playlist</h2>
-        <div class="stepContainer">
-            <div class="step1">
-                <i class='bx bxs-copy' ></i>
-                <p>Copy your Spotify playlist URL</p>
-            </div>
-            <div class="step2">
-                <i class='bx bx-laptop'></i>
-                <p>Paste your URL in the search box
-                    and click the "search" icon
-                </p>
-            </div>
-            <div class="step3">
-                <i class='bx bxs-download' ></i>
-                <p>Click "Download" to begin downloading</p>
-            </div>
+        <div style="margin: auto;justify-content: center;max-width: 320px;text-align: center;">
+            <h2>How to use this site</h2>
+            <p style="word-wrap: break-word;">
+                Paste Spotify url or search keywords to find and convert songs to mp3 format.
+            </p>
+            <p style="word-wrap: break-word;">For example: https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT?si=f8f4d3f023654d51</p>
+            <p style="word-wrap: break-word;"></p>
         </div>
+        </div>
+        <footer style="margin: auto;justify-content: center;text-align: center;">
+            <p style="font-size: 15px;">DISCLAIMER: XXX.com serves you on a legal basis. Do not download any copyrighted materials without permission.</p>
+            <!--
+            <div id="legal_disclaimers" style="display: flex;justify-content: center;">
+                <div id="terms_of_service" style="margin: 10px;">
+                    <p><a href="/terms_of_service">Terms of service</a></p>
+                </div>
+                <div id="privacy_policy"style="margin: 10px;">
+                    <p><a href="/privacy_policy">Privacy policy</a></p>
+                </div>
+            </div>
+            -->
+        </footer>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script type="text/javascript" charset="utf-8">
-            var search_input = document.getElementById('search_input')
-            var search_button = document.getElementById('search_button')
         </script>
     </body> 
 </html>

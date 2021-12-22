@@ -5,30 +5,32 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Spotify Download</title>
+        <title>Spotify Converter</title>
         <link rel="stylesheet" href="../static/style.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        {{ download_link }}
-        {{ songObj }}
-        <h1 onclick="window.location.reload();">Spotify Downloader</h1>
-        <div class="searchBarContainer">
+        <h1><a href="/" style="text-decoration: none;color: #0d6efd;">Spotify Converter</a></h1>
+        <div class="searchBarContainer" style="margin-bottom: 40px;">
             <form class="searchBar" id="search_form" method="post">
-                <input id="search_input" type="text" placeholder="Search.." name="search" required>
+                <input id="search_input" type="text" placeholder="Search term or Spotify url..." name="search" required>
                 <button id="search_button"type="submit"><i class="fa fa-search"></i></button>
             </form>
         </div>
-        <img src="{{ songObj.album_cover_url }}" width="320" height="320">
-        <p>{{ songObj.file_name }}</p>
-        <p id="duration_display"></p>
-        <form id="download_song_form" method="post">
-            <input name="download_button" type="submit" value="Download">
-        </form>
+        <div id="display_song" style="margin: auto;justify-content: center;max-width: 320px;">
+            <img src="{{ songObj.album_cover_url }}" width="320" height="320">
+            <p style="word-wrap: break-word;">{{ songObj.song_name }}</p>
+            <p id="artists"></p>
+            <p id="duration_display"></p>
+            <form id="download_song_form" method="post">
+                <input id="download_button" style="width:80px;height:20px;"name="download_button" type="submit" value="Download">
+            </form>
+        </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script type="text/javascript" charset="utf-8">
+        var songObject = {{ songObj|tojson }}
         var duration = "{{ songObj.duration }}"; // in seconds
         var minutes = Math.floor(duration / 60);
         var seconds = Math.round(duration - minutes * 60);
@@ -39,6 +41,10 @@
         }
         var duration_display = `${minutes}:${seconds}`;
         document.getElementById("duration_display").innerHTML = duration_display;
+     
+        document.getElementById('artists').innerHTML = String(songObject.list_of_artist_names).replace(',',', ')
+
+
 
         /*
         $('#download_song_form').on("submit", (e) => {

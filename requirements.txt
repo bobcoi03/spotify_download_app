@@ -2,7 +2,7 @@ flask==2.0.2
 Flask-Session==0.4.0
 werkzeug==2.0.2
 asyncio==3.4.3
-spotdl==3.9.1
+git+https://github.com/bobcoi03/spotify-downloader.git
 gunicorn==20.1.0
 redis==4.0.2
 rq==1.10.1

@@ -104,9 +104,9 @@ def download_page(): # str: download_link = spotify link to track
             pass
         else:
             DownloadManager(spotdl_opts).download_multiple_songs(song_list)
-            shutil.move(songObj["file_name"], './uploads/')
+            #shutil.move(songObj["file_name"], './uploads/')
 
-        return send_from_directory('./uploads/', songObj["file_name"], as_attachment=True)
+        return send_from_directory('./', songObj["file_name"], as_attachment=True)
 
     return render_template('download.html', download_link=session['download_link'], songObj = songObj)
 

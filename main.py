@@ -7,7 +7,6 @@
 from flask import Flask, render_template, request, send_from_directory, session
 from flask_session import Session
 from flask.helpers import url_for
-import socketio
 from spotdl.download import DownloadManager
 from spotdl.parsers import parse_query
 from spotdl.search import SpotifyClient, SongObject, from_spotify_url
@@ -30,7 +29,7 @@ DIRNAME = os.path.dirname(__file__)
 
 app = Flask(__name__)
 app.secret_key = 'super secret key lmao'
-app.config['SESSION_TYPE'] = 'redis'
+app.config['SESSION_TYPE'] = 'filesystem'
 Session(app)
 
 @app.route("/download", methods = ['GET','POST'])

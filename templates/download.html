@@ -27,7 +27,7 @@
             <p id="artists"></p>
             <p id="duration_display"></p>
             <form id="download_song_form" method="post">
-                <input id="download_button" style="width:80px;height:20px;"name="download_button" type="submit" value="Download">
+                <input id="download_button" style="width:100px;height:20px;font-size: 12px;"name="download_button" type="submit" value="Download">
             </form>
         </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -46,8 +46,9 @@
      
         document.getElementById('artists').innerHTML = String(songObject.list_of_artist_names).replace(',',', ')
 
-
-
+        function downloadToDownloading() {
+            document.getElementById('download_button').value = "Downloading...";
+        }
         /*
         $('#download_song_form').on("submit", (e) => {
             $.ajax({
